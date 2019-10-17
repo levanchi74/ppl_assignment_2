@@ -1,0 +1,10 @@
+
+                int main() {
+                    boolean status;
+                    if(i==1){
+                        status = true;
+                    }else{
+                        status = false;
+                    }
+                }
+                

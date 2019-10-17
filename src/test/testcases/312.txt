@@ -1,0 +1,5 @@
+
+                float func(int x) {
+                    int a;
+                }
+                

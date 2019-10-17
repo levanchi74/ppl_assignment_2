@@ -1,0 +1,5 @@
+
+                float func(float d[]){
+                    int a;
+                }
+                

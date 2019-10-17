@@ -1,0 +1,9 @@
+
+                int main(){
+                do {
+                    int a ;
+                    a = a + 1; 
+                }
+                while( a == b ) ;
+                }
+                

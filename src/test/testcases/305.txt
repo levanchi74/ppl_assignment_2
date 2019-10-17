@@ -1,0 +1,7 @@
+
+                int x,y,arr[5];
+                string str;
+                boolean bool[10];
+                //temp = 1;
+                float d1,d2;
+                

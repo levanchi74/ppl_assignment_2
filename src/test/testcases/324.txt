@@ -1,0 +1,11 @@
+
+                int main(){
+                do {
+                    int a,b[2];
+                    x = x+ 1;
+                    k = arr[1];
+                    j = (x*k)-1;
+                }
+                while( a < 10 || status == true ) ;
+                }
+                
