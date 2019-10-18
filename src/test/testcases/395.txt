@@ -1,0 +1,4 @@
+int main(string args[]){}
+        int[] __str__(string a, string exception, boolean b[], float a){}
+        boolean[] __abc(boolean isTrue){}
+        float pi(float pi){}

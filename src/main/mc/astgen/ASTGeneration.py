@@ -1,7 +1,10 @@
+
+# Name: Le Van Chi 
+# MSSV: 1510289
+
 from MCVisitor import MCVisitor
 from MCParser import MCParser
 from AST import *
-
 
 def flatten(lst):
     flat = []

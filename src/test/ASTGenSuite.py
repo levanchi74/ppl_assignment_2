@@ -1018,3 +1018,347 @@ class ASTGenSuite(unittest.TestCase):
         """
         expect = "Program([FuncDecl(Id(print),[VarDecl(a,IntType)],VoidType,Block([CallExpr(Id(print),[Id(a)])])),FuncDecl(Id(main),[VarDecl(args,ArrayTypePointer(StringType))],IntType,Block([VarDecl(i,IntType),For(BinaryOp(=,Id(i),IntLiteral(1));BinaryOp(<,Id(i),CallExpr(Id(len),[Id(a)]));BinaryOp(=,Id(i),BinaryOp(+,Id(i),IntLiteral(1)));BinaryOp(=,ArrayCell(Id(a),Id(i)),Id(i))),For(BinaryOp(=,Id(i),IntLiteral(1));BinaryOp(<,Id(i),CallExpr(Id(len),[Id(a)]));BinaryOp(=,Id(i),BinaryOp(+,Id(i),IntLiteral(1)));CallExpr(Id(print),[ArrayCell(Id(a),Id(i))]))]))])"
         self.assertTrue(TestAST.checkASTGen(input, expect, 381))
+
+    def test_simple_program3(self):
+        """ Test Simple Program """
+        input = r"""
+        void print(int a){
+            a = foo()[5];
+            b = foo2(a[100])[10];
+            if (a && b)
+                print(a);
+            else
+                continue;
+        }
+        """
+        expect = "Program([FuncDecl(Id(print),[VarDecl(a,IntType)],VoidType,Block([BinaryOp(=,Id(a),ArrayCell(CallExpr(Id(foo),[]),IntLiteral(5))),BinaryOp(=,Id(b),ArrayCell(CallExpr(Id(foo2),[ArrayCell(Id(a),IntLiteral(100))]),IntLiteral(10))),If(BinaryOp(&&,Id(a),Id(b)),CallExpr(Id(print),[Id(a)]),Continue())]))])"
+        self.assertTrue(TestAST.checkASTGen(input, expect, 382))
+
+    def test_complex_program1(self):
+        """ Test Complex Program """
+        input = r"""
+        int  main()
+        {
+            int i;
+            i = 8;
+            return 0;
+        }
+        int factorial( int i)
+        {
+            if(i < 2) 
+            {
+            return 1;
+            }
+            return i * factorial(i - 1);
+        }
+        """
+        expect = "Program([FuncDecl(Id(main),[],IntType,Block([VarDecl(i,IntType),BinaryOp(=,Id(i),IntLiteral(8)),Return(IntLiteral(0))])),FuncDecl(Id(factorial),[VarDecl(i,IntType)],IntType,Block([If(BinaryOp(<,Id(i),IntLiteral(2)),Block([Return(IntLiteral(1))])),Return(BinaryOp(*,Id(i),CallExpr(Id(factorial),[BinaryOp(-,Id(i),IntLiteral(1))])))]))])"
+        self.assertTrue(TestAST.checkASTGen(input, expect, 383))
+
+    def test_if_stmt8(self):
+        """ Test If Statement """
+        input = r"""void main(){
+            int a;
+            a = true;
+            if (true){
+                if (a == true){
+                    if (!a){
+                        a = false;
+                        string b;
+                        b = a;
+                    }
+                    else{
+                        string b;
+                        b = a;
+                    }
+                }
+                else{
+                    a = false;
+                }
+            }
+        }"""
+        expect = "Program([FuncDecl(Id(main),[],VoidType,Block([VarDecl(a,IntType),BinaryOp(=,Id(a),BooleanLiteral(true)),If(BooleanLiteral(true),Block([If(BinaryOp(==,Id(a),BooleanLiteral(true)),Block([If(UnaryOp(!,Id(a)),Block([BinaryOp(=,Id(a),BooleanLiteral(false)),VarDecl(b,StringType),BinaryOp(=,Id(b),Id(a))]),Block([VarDecl(b,StringType),BinaryOp(=,Id(b),Id(a))]))]),Block([BinaryOp(=,Id(a),BooleanLiteral(false))]))]))]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,384))
+
+    def test_complex_program3(self):
+        """ Test Complex Program """
+        input = r"""
+        void main(){
+        int A, B, temp;
+
+        printf("Please enter the 1st number : ");
+        scanf("%d",A);
+        printf("\nPlease enter the 2nd number : ");
+        scanf("%d",B);
+
+        printf("\nBefore swapping:\n");
+        printf("A - %d \nB - %d", A, B);
+
+        temp = A;
+        A = B;
+        B = temp;
+
+        printf("\nAfter swapping:\n");
+        printf("A - %d \nB - %d", A, B);
+
+        return 0;
+        }
+        """
+        expect = "Program([FuncDecl(Id(main),[],VoidType,Block([VarDecl(A,IntType),VarDecl(B,IntType),VarDecl(temp,IntType),CallExpr(Id(printf),[StringLiteral(Please enter the 1st number : )]),CallExpr(Id(scanf),[StringLiteral(%d),Id(A)]),CallExpr(Id(printf),[StringLiteral(\\nPlease enter the 2nd number : )]),CallExpr(Id(scanf),[StringLiteral(%d),Id(B)]),CallExpr(Id(printf),[StringLiteral(\\nBefore swapping:\\n)]),CallExpr(Id(printf),[StringLiteral(A - %d \\nB - %d),Id(A),Id(B)]),BinaryOp(=,Id(temp),Id(A)),BinaryOp(=,Id(A),Id(B)),BinaryOp(=,Id(B),Id(temp)),CallExpr(Id(printf),[StringLiteral(\\nAfter swapping:\\n)]),CallExpr(Id(printf),[StringLiteral(A - %d \\nB - %d),Id(A),Id(B)]),Return(IntLiteral(0))]))])"
+        self.assertTrue(TestAST.checkASTGen(input, expect, 385))
+
+    def test_complex_program4(self):
+        """ Test Complex Program """
+        input = r"""
+        int evaluatePostfix(string exp)  
+{  
+    // Create a stack of capacity equal to expression size  
+    int stack;
+    stack = createStack(strlen(exp));  
+    int i;  
+
+    // See if stack was created successfully  
+    if (!stack) return -1;  
+
+    // Scan all characters one by one  
+    for (i = 0; exp[i]; i = i + 1)  
+    {  
+        //if the character is blank space then continue  
+        if(exp[i] == " ")continue;  
+
+        // If the scanned character is an  
+        // operand (number here),extract the full number  
+        // Push it to the stack.  
+        if (isdigit(exp[i]))  
+        {  
+            int num;
+            num=0;  
+
+            //extract full number
+            do{
+                {  
+                num = num * 10 + (exp[i] - 0);  
+                i = i + 1;  
+            } 
+            } 
+            while(isdigit(exp[i]));  
+            i=i+1;  
+
+            //push the element in the stack  
+            push(stack,num);  
+        }  
+
+        // If the scanned character is an operator, pop two  
+        // elements from stack apply the operator  
+        else
+        {  
+            int val1;
+            val1 = pop(stack);  
+            int val2;
+            val2 = pop(stack);  
+
+            if (exp[i] == "+") {push(stack, val2 + val1); break;}
+            if (exp[i] == "-") {push(stack, val2 - val1); break;  }
+            if (exp[i] == "*") {push(stack, val2 * val1); break;  }
+            if (exp[i] == "/") {push(stack, val2/val1); break;  }
+
+        }  
+    }  
+    return pop(stack);  
+}  
+        """
+        expect =  "Program([FuncDecl(Id(evaluatePostfix),[VarDecl(exp,StringType)],IntType,Block([VarDecl(stack,IntType),BinaryOp(=,Id(stack),CallExpr(Id(createStack),[CallExpr(Id(strlen),[Id(exp)])])),VarDecl(i,IntType),If(UnaryOp(!,Id(stack)),Return(UnaryOp(-,IntLiteral(1)))),For(BinaryOp(=,Id(i),IntLiteral(0));ArrayCell(Id(exp),Id(i));BinaryOp(=,Id(i),BinaryOp(+,Id(i),IntLiteral(1)));Block([If(BinaryOp(==,ArrayCell(Id(exp),Id(i)),StringLiteral( )),Continue()),If(CallExpr(Id(isdigit),[ArrayCell(Id(exp),Id(i))]),Block([VarDecl(num,IntType),BinaryOp(=,Id(num),IntLiteral(0)),Dowhile([Block([Block([BinaryOp(=,Id(num),BinaryOp(+,BinaryOp(*,Id(num),IntLiteral(10)),BinaryOp(-,ArrayCell(Id(exp),Id(i)),IntLiteral(0)))),BinaryOp(=,Id(i),BinaryOp(+,Id(i),IntLiteral(1)))])])],CallExpr(Id(isdigit),[ArrayCell(Id(exp),Id(i))])),BinaryOp(=,Id(i),BinaryOp(+,Id(i),IntLiteral(1))),CallExpr(Id(push),[Id(stack),Id(num)])]),Block([VarDecl(val1,IntType),BinaryOp(=,Id(val1),CallExpr(Id(pop),[Id(stack)])),VarDecl(val2,IntType),BinaryOp(=,Id(val2),CallExpr(Id(pop),[Id(stack)])),If(BinaryOp(==,ArrayCell(Id(exp),Id(i)),StringLiteral(+)),Block([CallExpr(Id(push),[Id(stack),BinaryOp(+,Id(val2),Id(val1))]),Break()])),If(BinaryOp(==,ArrayCell(Id(exp),Id(i)),StringLiteral(-)),Block([CallExpr(Id(push),[Id(stack),BinaryOp(-,Id(val2),Id(val1))]),Break()])),If(BinaryOp(==,ArrayCell(Id(exp),Id(i)),StringLiteral(*)),Block([CallExpr(Id(push),[Id(stack),BinaryOp(*,Id(val2),Id(val1))]),Break()])),If(BinaryOp(==,ArrayCell(Id(exp),Id(i)),StringLiteral(/)),Block([CallExpr(Id(push),[Id(stack),BinaryOp(/,Id(val2),Id(val1))]),Break()]))]))])),Return(CallExpr(Id(pop),[Id(stack)]))]))])"
+        self.assertTrue(TestAST.checkASTGen(input, expect, 386))
+
+
+    def test_complex_program5(self):
+        """ Test Complex Program """
+        input = r"""
+                    int main()
+            
+            {
+            
+                float a, b, c;
+            
+                printf("\nPlease enter 3 numbers: ");
+            
+                scanf("%f %f %f", a, b, c);
+            
+                if(c<=a && c<=b)
+            
+                    printf("The smallest number is %.3f", c);
+            
+                return 0;
+            
+            }
+        """
+        expect = "Program([FuncDecl(Id(main),[],IntType,Block([VarDecl(a,FloatType),VarDecl(b,FloatType),VarDecl(c,FloatType),CallExpr(Id(printf),[StringLiteral(\\nPlease enter 3 numbers: )]),CallExpr(Id(scanf),[StringLiteral(%f %f %f),Id(a),Id(b),Id(c)]),If(BinaryOp(&&,BinaryOp(<=,Id(c),Id(a)),BinaryOp(<=,Id(c),Id(b))),CallExpr(Id(printf),[StringLiteral(The smallest number is %.3f),Id(c)])),Return(IntLiteral(0))]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,387))
+
+    def test_complex_program6(self):
+        """ Test Complex Program """
+        input = r"""
+        int  main()
+        {
+            int A, B, temp;
+
+            temp = A;
+            A = B;
+            B = temp;
+            
+            printf("\nAfter swapping:\n");
+            printf("A - %d \nB - %d", A, B);
+ 
+            return 0;
+        }
+        """
+        expect = "Program([FuncDecl(Id(main),[],IntType,Block([VarDecl(A,IntType),VarDecl(B,IntType),VarDecl(temp,IntType),BinaryOp(=,Id(temp),Id(A)),BinaryOp(=,Id(A),Id(B)),BinaryOp(=,Id(B),Id(temp)),CallExpr(Id(printf),[StringLiteral(\\nAfter swapping:\\n)]),CallExpr(Id(printf),[StringLiteral(A - %d \\nB - %d),Id(A),Id(B)]),Return(IntLiteral(0))]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,388))
+
+    def test_complex_program7(self):
+        """ Test Complex Program """
+        input = r"""
+        int  main()
+        {
+            int n, sum , d;
+            scanf("%d",n);
+            do
+            {
+                rem = n % 10;
+                sum = sum + rem;
+                n = n / 100;
+            }while(n != 0);
+
+            return 0;
+        }
+        """
+        expect =  "Program([FuncDecl(Id(main),[],IntType,Block([VarDecl(n,IntType),VarDecl(sum,IntType),VarDecl(d,IntType),CallExpr(Id(scanf),[StringLiteral(%d),Id(n)]),Dowhile([Block([BinaryOp(=,Id(rem),BinaryOp(%,Id(n),IntLiteral(10))),BinaryOp(=,Id(sum),BinaryOp(+,Id(sum),Id(rem))),BinaryOp(=,Id(n),BinaryOp(/,Id(n),IntLiteral(100)))])],BinaryOp(!=,Id(n),IntLiteral(0))),Return(IntLiteral(0))]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,389))
+
+    def test_complex_program8(self):
+        """ Test Complex Program """
+        input = r"""
+        int  main()
+        {
+            int base, exponent;
+            int result;
+            result = 1;
+            printf("Enter a base number: ");
+            scanf("%d", base);
+            printf("Enter an exponent: ");
+            scanf("%d", exponent);
+            do
+            {
+                result = result * base;
+                exponent = exponent - 1;
+            }while (exponent != 0);
+            printf("Answer = %lld", result);
+            return 0;
+        }
+        """
+        expect = "Program([FuncDecl(Id(main),[],IntType,Block([VarDecl(base,IntType),VarDecl(exponent,IntType),VarDecl(result,IntType),BinaryOp(=,Id(result),IntLiteral(1)),CallExpr(Id(printf),[StringLiteral(Enter a base number: )]),CallExpr(Id(scanf),[StringLiteral(%d),Id(base)]),CallExpr(Id(printf),[StringLiteral(Enter an exponent: )]),CallExpr(Id(scanf),[StringLiteral(%d),Id(exponent)]),Dowhile([Block([BinaryOp(=,Id(result),BinaryOp(*,Id(result),Id(base))),BinaryOp(=,Id(exponent),BinaryOp(-,Id(exponent),IntLiteral(1)))])],BinaryOp(!=,Id(exponent),IntLiteral(0))),CallExpr(Id(printf),[StringLiteral(Answer = %lld),Id(result)]),Return(IntLiteral(0))]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,390))
+
+    def test_collection1(self):
+        input = """int main() { a; }"""
+        expect = str(Program([FuncDecl(Id("main"),[],IntType(),Block([Id("a")]))]))
+        #expect =    "Program([FuncDecl(Id(main),[],IntType,Block([Id(a)]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,391))
+
+    def test_collection2(self):
+        input = """int main(){
+            n = ((((((n))/2))));
+        } """
+        expect = "Program([FuncDecl(Id(main),[],IntType,Block([BinaryOp(=,Id(n),BinaryOp(/,Id(n),IntLiteral(2)))]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,392))
+
+    def test_non_body_func_decl8(self):
+        input = r"""int main(int a, float b[], string c[], boolean d){}
+        float main(){}
+        boolean[] main(int a[]){}"""
+        expect = "Program([FuncDecl(Id(main),[VarDecl(a,IntType),VarDecl(b,ArrayTypePointer(FloatType)),VarDecl(c,ArrayTypePointer(StringType)),VarDecl(d,BoolType)],IntType,Block([])),FuncDecl(Id(main),[],FloatType,Block([])),FuncDecl(Id(main),[VarDecl(a,ArrayTypePointer(IntType))],ArrayTypePointer(BoolType),Block([]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,393))
+    
+    def test_non_body_func_decl9(self):
+        input = r"""int foo(int a, int b){}
+        int[] main(){}
+        float[] main(string args[]){}
+        string[] int2str(int a){}
+        boolean isTrue(boolean a){}"""
+        expect = "Program([FuncDecl(Id(foo),[VarDecl(a,IntType),VarDecl(b,IntType)],IntType,Block([])),FuncDecl(Id(main),[],ArrayTypePointer(IntType),Block([])),FuncDecl(Id(main),[VarDecl(args,ArrayTypePointer(StringType))],ArrayTypePointer(FloatType),Block([])),FuncDecl(Id(int2str),[VarDecl(a,IntType)],ArrayTypePointer(StringType),Block([])),FuncDecl(Id(isTrue),[VarDecl(a,BoolType)],BoolType,Block([]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,394))
+
+
+    def test_non_body_func_decl10(self):
+        """ Test Non Body Function Declare """
+        input = r"""int main(string args[]){}
+        int[] __str__(string a, string exception, boolean b[], float a){}
+        boolean[] __abc(boolean isTrue){}
+        float pi(float pi){}"""
+        expect = "Program([FuncDecl(Id(main),[VarDecl(args,ArrayTypePointer(StringType))],IntType,Block([])),FuncDecl(Id(__str__),[VarDecl(a,StringType),VarDecl(exception,StringType),VarDecl(b,ArrayTypePointer(BoolType)),VarDecl(a,FloatType)],ArrayTypePointer(IntType),Block([])),FuncDecl(Id(__abc),[VarDecl(isTrue,BoolType)],ArrayTypePointer(BoolType),Block([])),FuncDecl(Id(pi),[VarDecl(pi,FloatType)],FloatType,Block([]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,395))
+
+    def test_func_decl_body_vardecl1(self):
+        """ Test Function Declare With Body Contains Variable Declare"""
+        input = r"""int main(){
+        int a;
+        float c;
+        }"""
+        expect = "Program([FuncDecl(Id(main),[],IntType,Block([VarDecl(a,IntType),VarDecl(c,FloatType)]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,396))
+
+    def test_func_decl_body_vardecl2(self):
+        """ Test Function Declare With Body Contains Variable Declare"""
+        input = r"""int[] main(float b[], string a){
+        int a[10];
+        string c;
+        boolean a[1000];
+        float a;
+        }"""
+        expect = "Program([FuncDecl(Id(main),[VarDecl(b,ArrayTypePointer(FloatType)),VarDecl(a,StringType)],ArrayTypePointer(IntType),Block([VarDecl(a,ArrayType(IntType,IntLiteral(10))),VarDecl(c,StringType),VarDecl(a,ArrayType(BoolType,IntLiteral(1000))),VarDecl(a,FloatType)]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,397))
+
+
+    def test_func_decl_body_vardecl3(self):
+        """ Test Function Declare With Body Contains Variable Declare"""
+        input = r"""int main(){
+            float a;
+            string a;
+            boolean b;
+            int b;
+        }"""
+        expect = "Program([FuncDecl(Id(main),[],IntType,Block([VarDecl(a,FloatType),VarDecl(a,StringType),VarDecl(b,BoolType),VarDecl(b,IntType)]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,398))
+
+    def test_func_decl_body_vardecl4(self):
+        """ Test Function Declare With Body Contains Variable Declare"""
+        input = r"""int[] main(float b[], string a){
+            int a[5];
+            float b[10];
+            string c[15];
+            boolean d[20];
+        }"""
+        expect = "Program([FuncDecl(Id(main),[VarDecl(b,ArrayTypePointer(FloatType)),VarDecl(a,StringType)],ArrayTypePointer(IntType),Block([VarDecl(a,ArrayType(IntType,IntLiteral(5))),VarDecl(b,ArrayType(FloatType,IntLiteral(10))),VarDecl(c,ArrayType(StringType,IntLiteral(15))),VarDecl(d,ArrayType(BoolType,IntLiteral(20)))]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,399))
+
+    def test_func_decl_body_vardecl5(self):
+        """ Test Function Declare With Body Contains Variable Declare"""
+        input = r"""int[] main(float b[], string a){
+            int a, a[5];
+            float c, d, e[10], f[15]; int a,b,c;
+            string a,b,c; string a[20];
+            boolean a; float b; boolean a;
+        }"""
+        expect = "Program([FuncDecl(Id(main),[VarDecl(b,ArrayTypePointer(FloatType)),VarDecl(a,StringType)],ArrayTypePointer(IntType),Block([VarDecl(a,IntType),VarDecl(a,ArrayType(IntType,IntLiteral(5))),VarDecl(c,FloatType),VarDecl(d,FloatType),VarDecl(e,ArrayType(FloatType,IntLiteral(10))),VarDecl(f,ArrayType(FloatType,IntLiteral(15))),VarDecl(a,IntType),VarDecl(b,IntType),VarDecl(c,IntType),VarDecl(a,StringType),VarDecl(b,StringType),VarDecl(c,StringType),VarDecl(a,ArrayType(StringType,IntLiteral(20))),VarDecl(a,BoolType),VarDecl(b,FloatType),VarDecl(a,BoolType)]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,400))
+
+    def test_if_stmt1(self):
+        """ Test If Statement """
+        input = r"""void main(){
+            if (true)
+                a = a + 1;
+            else
+                a = b;
+        }"""
+        expect = "Program([FuncDecl(Id(main),[],VoidType,Block([If(BooleanLiteral(true),BinaryOp(=,Id(a),BinaryOp(+,Id(a),IntLiteral(1))),BinaryOp(=,Id(a),Id(b)))]))])"
+        self.assertTrue(TestAST.checkASTGen(input,expect,401))

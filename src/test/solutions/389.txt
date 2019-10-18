@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(main),[],IntType,Block([VarDecl(n,IntType),VarDecl(sum,IntType),VarDecl(d,IntType),CallExpr(Id(scanf),[StringLiteral(%d),Id(n)]),Dowhile([Block([BinaryOp(=,Id(rem),BinaryOp(%,Id(n),IntLiteral(10))),BinaryOp(=,Id(sum),BinaryOp(+,Id(sum),Id(rem))),BinaryOp(=,Id(n),BinaryOp(/,Id(n),IntLiteral(100)))])],BinaryOp(!=,Id(n),IntLiteral(0))),Return(IntLiteral(0))]))])

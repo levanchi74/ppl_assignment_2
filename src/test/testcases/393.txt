@@ -1,0 +1,3 @@
+int main(int a, float b[], string c[], boolean d){}
+        float main(){}
+        boolean[] main(int a[]){}

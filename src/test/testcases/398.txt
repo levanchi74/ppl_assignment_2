@@ -1,0 +1,6 @@
+int main(){
+            float a;
+            string a;
+            boolean b;
+            int b;
+        }

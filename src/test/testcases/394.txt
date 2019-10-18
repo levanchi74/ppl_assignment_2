@@ -1,0 +1,5 @@
+int foo(int a, int b){}
+        int[] main(){}
+        float[] main(string args[]){}
+        string[] int2str(int a){}
+        boolean isTrue(boolean a){}

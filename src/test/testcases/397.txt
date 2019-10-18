@@ -1,0 +1,6 @@
+int[] main(float b[], string a){
+        int a[10];
+        string c;
+        boolean a[1000];
+        float a;
+        }
