@@ -1,0 +1,6 @@
+
+        void main(){
+            s = a +b + c * d;
+            d = a && b;
+            e = !a;
+        }

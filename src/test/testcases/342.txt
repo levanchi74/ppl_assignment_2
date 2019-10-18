@@ -1,0 +1,11 @@
+void main(){
+            for(a=1;a<10;a=a+1){
+                for (b=2;b/2==0; b=b+1){
+                    if (b%2 == 0)
+                        continue;
+                    else
+                        break;
+                }
+                continue;
+            }
+        }

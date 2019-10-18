@@ -1,7 +1,7 @@
 from MCVisitor import MCVisitor
 from MCParser import MCParser
 from AST import *
-from functools import reduce
+
 
 def flatten(lst):
     flat = []
@@ -77,14 +77,12 @@ class ASTGeneration(MCVisitor):
         paratype = ArrayPointerType(self.visit(ctx.primtype())) if ctx.LS() else self.visit(ctx.primtype())
         return VarDecl(paraid, paratype)
 
-    #blockstmt: LP (vardecl | stmt)* RP; // ?
+    #blockstmt: LP vardecl_stmt* RP;
+    #vardecl_stmt: vardecl | stmt ;
     def visitBlockstmt(self,ctx:MCParser.ParaContext):
-        lstMember = []
-        for i in ctx.vardecl():
-            lstMember += [self.visit(i)]
-        for j in ctx.stmt():
-            lstMember += [self.visit(j)]
-        return Block(flatten(lstMember))
+        return Block(flatten([self.visit(x) for x in ctx.vardecl_stmt()]))
+    def visitVardecl_stmt(self,ctx:MCParser.Vardecl_stmtContext):
+        return self.visit(ctx.getChild(0))
 
     #stmt: ifstmt | dowhilestmt | forstmt | breakstmt | contistmt | returnstmt | expstmt | blockstmt;
     def visitStmt(self,ctx:MCParser.StmtContext):
@@ -111,7 +109,7 @@ class ASTGeneration(MCVisitor):
         exp1 = self.visit(ctx.exp(0))
         exp2 = self.visit(ctx.exp(1))
         exp3 = self.visit(ctx.exp(2))
-        loop = self.visit(ctx.stmt(0))
+        loop = self.visit(ctx.stmt())
         return For(exp1,exp2,exp3,loop)
 
     #breakstmt:   BREAK SEMI;
@@ -192,7 +190,7 @@ class ASTGeneration(MCVisitor):
 
     #exp6: exp6 (MULOP | DIVOP | MODOP) exp7 | exp7;
     def visitExp6(self,ctx:MCParser.Exp6Context):
-        if(ctx.getChildCount == 3):
+        if(ctx.getChildCount() == 3):
             op = ctx.getChild(1).getText()
             left = self.visit(ctx.exp6())
             right = self.visit(ctx.exp7())
@@ -202,9 +200,9 @@ class ASTGeneration(MCVisitor):
 
     #exp7: (SUBOP | NEGOP) exp7 | exp8;    // ?
     def visitExp7(self,ctx:MCParser.Exp7Context):
-        if(ctx.getChildCount == 2):
-            op = ctx.getChild(0)
-            body = self.visit(ctx.exp7(0))
+        if(ctx.getChildCount() == 2):
+            op = ctx.getChild(0).getText()
+            body = self.visit(ctx.exp7())
             return UnaryOp(op,body)
         else:
             return self.visit(ctx.getChild(0))
@@ -229,15 +227,16 @@ class ASTGeneration(MCVisitor):
         param = flatten([self.visit(x) for x in ctx.exp()]) if ctx.exp() else []
         return CallExpr(method,param)
 
-    #elearray: ( ID | funcall) LS exp RS;
+    #elearray: ( ID | funcall | literal) LS exp RS;
     def visitElearray(self,ctx:MCParser.ElearrayContext):
         idx = self.visit(ctx.exp())
         if(ctx.ID()):
             arr = Id(ctx.ID().getText())
-            return ArrayCell(arr,idx)
+        elif(ctx.funcall()):
+            arr = self.visit(ctx.funcall())
         else:
-            arr = self.visit(ctx.funcall(0))
-            return ArrayCell(arr,idx)
+            arr = self.visit(ctx.literal())
+        return ArrayCell(arr, idx)
 
     #literal: INTLIT | FLOATLIT | BOOLEANLIT | STRINGLIT ;
     def visitLiteral(self,ctx:MCParser.LiteralContext):

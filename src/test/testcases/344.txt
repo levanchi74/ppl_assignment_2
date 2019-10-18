@@ -1,0 +1,16 @@
+void main(){
+            for(a=1;a<10;a=a+1){
+                for (b=2;b/2==0; b=b+1){
+                    for(c=3;c!=0;c=c-1){
+                        continue;
+                    }
+                    do {
+                        if (c != 1)
+                            continue;
+                    }while true;
+                    continue;
+                }
+                continue;
+            }
+            break;
+        }

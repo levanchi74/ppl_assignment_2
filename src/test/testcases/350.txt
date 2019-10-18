@@ -1,0 +1,9 @@
+
+        int main(){
+            int a;
+            return a;
+        }
+        float main(){
+            float a;
+            return a;
+        }

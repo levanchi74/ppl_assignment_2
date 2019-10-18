@@ -1,0 +1,10 @@
+
+        string main(){
+            string a;
+            return a;
+        }
+        boolean main(){
+            boolean a;
+            return a;
+        }
+        

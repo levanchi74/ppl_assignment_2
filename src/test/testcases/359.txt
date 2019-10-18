@@ -1,0 +1,6 @@
+
+        int main(int c[]){
+            int rlt;
+            rlt = div(sub(mul(c[0], 10),10),10);
+            return rlt;
+        }

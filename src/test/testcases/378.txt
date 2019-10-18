@@ -1,0 +1,10 @@
+
+        void main(){
+            do{
+                do{
+                    if (a)
+                        return;
+                }while(true || a !=5);
+            }while(a <= 10);
+            do continue; while 1;
+        }

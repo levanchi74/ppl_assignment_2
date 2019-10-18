@@ -1,0 +1,9 @@
+void main(){
+            do{
+                string a;
+                int b;
+                b = a;
+                if (!a)
+                    return;
+            }while true;
+        }

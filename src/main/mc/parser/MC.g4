@@ -41,7 +41,10 @@ returntype: primtype | VOIDTYPE | arrptrtype;
 arrptrtype : primtype LS RS;
 paralist: para (COMMA para)*;
 para: primtype ID (LS RS)?;
-blockstmt: LP (vardecl | stmt)* RP; // ?
+//blockstmt: LP (vardecl | stmt)* RP; // ?
+blockstmt: LP vardecl_stmt* RP;
+vardecl_stmt: vardecl | stmt ;
+
 
 stmt: ifstmt | dowhilestmt | forstmt | breakstmt | contistmt | returnstmt | expstmt | blockstmt;
 ifstmt: IF LB exp RB stmt (ELSE stmt)?;
@@ -63,7 +66,7 @@ exp6: exp6 (MULOP | DIVOP | MODOP) exp7 | exp7;
 exp7: (SUBOP | NEGOP) exp7 | exp8;    // ?
 exp8:   LB exp RB | literal | ID | funcall | elearray;
 //elearray: ID LS INTLIT RS;
-elearray: ( ID | funcall) LS exp RS;
+elearray: ( ID | funcall | literal) LS exp RS;
 funcall : ID LB (exp (COMMA exp)*)? RB;
 literal: INTLIT | FLOATLIT | BOOLEANLIT | STRINGLIT ;
 INTLIT: [0-9]+;

@@ -1,0 +1,4 @@
+
+          void main(){
+              do a=a+1; a=b; if (true) break; while true;
+          }

@@ -1,0 +1,13 @@
+
+        void main(){
+            do{
+                do{
+                    a = a+1;
+                    if (a == 5)
+                        break; 
+                    do 
+                        a = a / 2;
+                    while(a<1);
+                }while(true || a !=5);
+            }while(a <= 10);
+        }

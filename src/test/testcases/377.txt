@@ -1,0 +1,11 @@
+
+        void main(){
+            do{
+                do{
+                    do 
+                        a = a / 2;
+                        do a = a * 2; while(a%2 == 0);
+                    while(a<1);
+                }while(true || a !=5);
+            }while(a <= 10);
+        }

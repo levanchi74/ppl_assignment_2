@@ -69,6 +69,11 @@ class MCVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by MCParser#vardecl_stmt.
+    def visitVardecl_stmt(self, ctx:MCParser.Vardecl_stmtContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by MCParser#stmt.
     def visitStmt(self, ctx:MCParser.StmtContext):
         return self.visitChildren(ctx)

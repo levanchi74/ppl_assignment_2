@@ -1,0 +1,18 @@
+
+        string[] main(){
+            string a[10];
+            for(i=0;i<10;i=i+1){
+                a[i] = str(i);
+            }
+            return a;
+        }
+        boolean[] main(){
+            boolean a[10];
+            for(i=0;i<10;i=i+1){
+                if (i % 2 == 0)
+                    a[i] = true;
+                else
+                    a[i] = false;
+            }
+            return a;
+        }
